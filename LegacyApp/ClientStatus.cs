@@ -1,4 +1,4 @@
-﻿namespace LegacyAppNetcore6
+﻿namespace LegacyApp
 {
     public enum ClientStatus
     {

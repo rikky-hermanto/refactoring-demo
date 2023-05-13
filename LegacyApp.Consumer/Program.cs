@@ -1,4 +1,4 @@
-﻿using LegacyAppNetcore6;
+﻿using LegacyApp;
 
 internal class Program
 {

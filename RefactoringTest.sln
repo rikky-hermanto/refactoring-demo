@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyAppNetcore6", "LegacyAppNetcore6\LegacyAppNetcore6.csproj", "{A8D47264-3FC5-4129-AF9B-05673AE7EA48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyApp", "LegacyApp\LegacyApp.csproj", "{A8D47264-3FC5-4129-AF9B-05673AE7EA48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyApp.ConsumerCore6", "LegacyApp.ConsumerCore6\LegacyApp.ConsumerCore6.csproj", "{EBD7D9C6-5CA5-4AF1-A3AD-9C052AD50686}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyApp.Consumer", "LegacyApp.Consumer\LegacyApp.Consumer.csproj", "{EBD7D9C6-5CA5-4AF1-A3AD-9C052AD50686}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

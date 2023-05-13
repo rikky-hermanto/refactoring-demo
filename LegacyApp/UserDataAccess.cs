@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace LegacyAppNetcore6
+namespace LegacyApp
 {
     public static class UserDataAccess
     {

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 
-namespace LegacyAppNetcore6
+namespace LegacyApp
 {
     [GeneratedCode("System.ServiceModel", "4.0.0.0")]
     [ServiceContract(ConfigurationName = "LegacyApp.IUserCreditService")]
@@ -40,7 +40,7 @@ namespace LegacyAppNetcore6
 
         public int GetCreditLimit(string firstname, string surname, DateTime dateOfBirth)
         {
-            return base.Channel.GetCreditLimit(firstname, surname, dateOfBirth);
+            return Channel.GetCreditLimit(firstname, surname, dateOfBirth);
         }
     }
 }
