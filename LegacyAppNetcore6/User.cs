@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LegacyApp
+namespace LegacyAppNetcore6
 {
     public class User
     {

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace LegacyApp
+namespace LegacyAppNetcore6
 {
     public class ClientRepository
     {
@@ -22,7 +22,7 @@ namespace LegacyApp
 
                 var parametr = new SqlParameter("@clientId", SqlDbType.Int) { Value = id };
                 command.Parameters.Add(parametr);
-                
+
                 connection.Open();
                 var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
                 while (reader.Read())
@@ -31,7 +31,7 @@ namespace LegacyApp
                     {
                         Id = int.Parse(reader["ClientId"].ToString()),
                         Name = reader["Name"].ToString(),
-                        ClientStatus = (ClientStatus) int.Parse(reader["ClientStatus"].ToString())
+                        ClientStatus = (ClientStatus)int.Parse(reader["ClientStatus"].ToString())
                     };
                 }
             }

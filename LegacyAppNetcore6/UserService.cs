@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LegacyApp
+namespace LegacyAppNetcore6
 {
     public class UserService
     {
@@ -19,7 +19,7 @@ namespace LegacyApp
             var now = DateTime.Now;
             int age = now.Year - dateOfBirth.Year;
 
-            if (now.Month < dateOfBirth.Month || (now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day))
+            if (now.Month < dateOfBirth.Month || now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
             {
                 age--;
             }
@@ -72,7 +72,7 @@ namespace LegacyApp
             {
                 return false;
             }
-            
+
             UserDataAccess.AddUser(user);
 
             return true;
