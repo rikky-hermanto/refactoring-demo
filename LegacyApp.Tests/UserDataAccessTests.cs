@@ -26,7 +26,8 @@ namespace LegacyApp.Tests
             var connection = new SqlConnection(connectionString);
 
             // Act
-            UserDataAccess.AddUser(user);
+            var userDataAccess = new UserDataAccess();
+            userDataAccess.AddUser(user);
 
             // Assert
             connection.Open();

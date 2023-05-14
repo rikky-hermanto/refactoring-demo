@@ -21,7 +21,7 @@ namespace LegacyApp
 
     [DebuggerStepThrough]
     [GeneratedCode("System.ServiceModel", "4.0.0.0")]
-    public partial class UserCreditServiceClient : ClientBase<IUserCreditService>, IUserCreditService
+    public partial class UserCreditServiceClient : ClientBase<IUserCreditService>, IUserCreditService, IUserCreditServiceClient
     {
         private IUserCreditServiceChannel _userCreditServiceChannelImplementation;
         public UserCreditServiceClient() { }
