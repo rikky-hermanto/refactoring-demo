@@ -4,25 +4,17 @@
     {
         public bool Validate(User user)
         {
-            if (string.IsNullOrEmpty(user.Firstname) || string.IsNullOrEmpty(user.Surname))
+            if (!ValidateName(user.Firstname) || !ValidateName(user.Surname))
             {
                 return false;
             }
 
-            if (user.EmailAddress.Contains("@") && !user.EmailAddress.Contains("."))
+            if (!ValidateEmail(user.EmailAddress))
             {
                 return false;
             }
 
-            var now = DateTime.Now;
-            int age = now.Year - user.DateOfBirth.Year;
-
-            if (now.Month < user.DateOfBirth.Month || now.Month == user.DateOfBirth.Month && now.Day < user.DateOfBirth.Day)
-            {
-                age--;
-            }
-
-            if (age < 21)
+            if (!ValidateAge(user.DateOfBirth))
             {
                 return false;
             }
@@ -30,14 +22,34 @@
             return true;
         }
 
-        public bool ValidateCreditLimit(User user)
+        private static bool ValidateName(string name)
         {
-            if (user.HasCreditLimit && user.CreditLimit < 500)
+            return !string.IsNullOrEmpty(name);
+        }
+
+        private static bool ValidateEmail(string email)
+        {
+            return email.Contains('@') && email.Contains('.');
+        }
+
+        private static bool ValidateAge(DateTime dateOfBirth)
+        {
+            int age = CalculateAge(dateOfBirth);
+
+            return age >= 21;
+        }
+
+        private static int CalculateAge(DateTime dateOfBirth)
+        {
+            var now = DateTime.Now;
+            int age = now.Year - dateOfBirth.Year;
+
+            if (now.Month < dateOfBirth.Month || now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
             {
-                return false;
+                age--;
             }
 
-            return true;
+            return age;
         }
     }
 }

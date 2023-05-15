@@ -5,19 +5,22 @@
         private readonly IClientRepository _clientRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserValidator _userValidator;
+        private readonly IUserValidator _creditLimitValidator;
         private readonly ICreditLimitProvider _creditLimitProvider;
 
-        public UserService() : this(new ClientRepository(), new UserDataAccess(), new CreditLimitProvider(), new UserValidator())
+        public UserService() : this(new ClientRepository(), new UserDataAccess(), new CreditLimitProvider(), new UserValidator(), new CreditLimitValidator())
         {
             
         }
 
-        public UserService(IClientRepository clientRepository, IUserRepository userRepository, ICreditLimitProvider creditLimitProvider, IUserValidator userValidator)
+        public UserService(IClientRepository clientRepository, IUserRepository userRepository, ICreditLimitProvider creditLimitProvider, 
+            IUserValidator userValidator, IUserValidator creditLimitValidator)
         {
             _clientRepository = clientRepository;
             _userRepository = userRepository;
             _creditLimitProvider = creditLimitProvider;
             _userValidator = userValidator;
+            _creditLimitValidator = creditLimitValidator;
         }
 
 
@@ -42,7 +45,7 @@
             _creditLimitProvider.ApplyCreditLimit(user, client);
 
 
-            if (!_userValidator.ValidateCreditLimit(user))
+            if (!_creditLimitValidator.Validate(user))
                 return false;
 
 

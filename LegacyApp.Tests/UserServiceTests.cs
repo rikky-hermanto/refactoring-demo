@@ -1,49 +1,100 @@
+using LegacyApp;
+using Moq;
 using System;
 using Xunit;
-using Moq;
 
 namespace LegacyApp.Tests
 {
     public class UserServiceTests
     {
-        [Theory]
-        [InlineData("John", "Doe", "john.doe@example.com", "2000-01-01", 1, true)]
-        [InlineData("", "Doe", "john.doe@example.com", "2000-01-01", 1, false)]
-        [InlineData("John", "", "john.doe@example.com", "2000-01-01", 1, false)]
-        [InlineData("John", "Doe", "johndoeexample.com", "2000-01-01", 1, false)]
-        [InlineData("John", "Doe", "john.doe@example.com", "2023-05-13", 1, false)]
-        [InlineData("John", "Doe", "john.doe@example.com", "2000-01-01", 2, true)]
-        [InlineData("John", "Doe", "john.doe@example.com", "2000-01-01", 3, false)]
-        public void AddUser_ShouldReturnExpectedResult(string firstname, string surname, string email, string dateOfBirth, int clientId, bool expectedResult)
+        private readonly Mock<IClientRepository> _clientRepositoryMock = new Mock<IClientRepository>();
+        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private readonly Mock<IUserValidator> _userValidatorMock = new Mock<IUserValidator>();
+        private readonly Mock<IUserValidator> _creditLimitValidatorMock = new Mock<IUserValidator>();
+        private readonly Mock<ICreditLimitProvider> _creditLimitProviderMock = new Mock<ICreditLimitProvider>();
+
+        [Fact]
+        public void AddUser_WithValidUser_ReturnsTrue()
         {
             // Arrange
-            var userService = new UserService();
-            var parsedDateOfBirth = DateTime.Parse(dateOfBirth);
+            var userService = new UserService(_clientRepositoryMock.Object, _userRepositoryMock.Object, _creditLimitProviderMock.Object,
+                _userValidatorMock.Object, _creditLimitValidatorMock.Object);
+            var user = new User
+            {
+                DateOfBirth = new DateTime(1990, 1, 1),
+                EmailAddress = "test@example.com",
+                Firstname = "John",
+                Surname = "Doe",
+                Client = new Client()
+            };
+            _clientRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(user.Client);
+            _userValidatorMock.Setup(x => x.Validate(It.IsAny<User>())).Returns(true);
+            _creditLimitProviderMock.Setup(x => x.ApplyCreditLimit(It.IsAny<User>(), It.IsAny<Client>()));
+            _creditLimitValidatorMock.Setup(x => x.Validate(It.IsAny<User>())).Returns(true);
+            _userRepositoryMock.Setup(x => x.AddUser(It.IsAny<User>()));
 
             // Act
-            var result = userService.AddUser(firstname, surname, email, parsedDateOfBirth, clientId);
+            var result = userService.AddUser(user.Firstname, user.Surname, user.EmailAddress, user.DateOfBirth, 1);
 
             // Assert
-            Assert.Equal(expectedResult, result);
+            Assert.True(result);
+            _clientRepositoryMock.Verify(x => x.GetById(It.IsAny<int>()), Times.Once);
+            _userValidatorMock.Verify(x => x.Validate(It.IsAny<User>()), Times.Once);
+            _creditLimitProviderMock.Verify(x => x.ApplyCreditLimit(It.IsAny<User>(), It.IsAny<Client>()), Times.Once);
+            _creditLimitValidatorMock.Verify(x => x.Validate(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.AddUser(It.IsAny<User>()), Times.Once);
         }
 
         [Fact]
-        public void AddUser_WithInvalidData_ReturnsFalse()
+        public void AddUser_WithInvalidUser_ReturnsFalse()
         {
             // Arrange
-            var firstName = "John";
-            var surname = "Doe";
-            var email = "john.doe.example.com"; // Invalid email address
-            var dateOfBirth = new DateTime(2005, 1, 1); // Under 21 years old
-            var clientId = 1;
-
-            var userService = new UserService();
+            var userService = new UserService(_clientRepositoryMock.Object, _userRepositoryMock.Object, _creditLimitProviderMock.Object,
+                _userValidatorMock.Object, _creditLimitValidatorMock.Object);
+            var user = new User();
+            _userValidatorMock.Setup(x => x.Validate(It.IsAny<User>())).Returns(false);
 
             // Act
-            var result = userService.AddUser(firstName, surname, email, dateOfBirth, clientId);
+            var result = userService.AddUser(user.Firstname, user.Surname, user.EmailAddress, user.DateOfBirth, 1);
 
             // Assert
             Assert.False(result);
+            _clientRepositoryMock.Verify(x => x.GetById(It.IsAny<int>()), Times.Never);
+            _userValidatorMock.Verify(x => x.Validate(It.IsAny<User>()), Times.Once);
+            _creditLimitProviderMock.Verify(x => x.ApplyCreditLimit(It.IsAny<User>(), It.IsAny<Client>()), Times.Never);
+            _creditLimitValidatorMock.Verify(x => x.Validate(It.IsAny<User>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.AddUser(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public void AddUser_WithInvalidCreditLimit_ReturnsFalse()
+        {
+            // Arrange
+            var userService = new UserService(_clientRepositoryMock.Object, _userRepositoryMock.Object, _creditLimitProviderMock.Object, 
+                _userValidatorMock.Object, _creditLimitValidatorMock.Object);
+            var user = new User
+            {
+                DateOfBirth = new DateTime(1990, 1, 1),
+                EmailAddress = "test@example.com",
+                Firstname = "John",
+                Surname = "Doe",
+                Client = new Client()
+            };
+            _clientRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(user.Client);
+            _userValidatorMock.Setup(x => x.Validate(It.IsAny<User>())).Returns(true);
+            _creditLimitProviderMock.Setup(x => x.ApplyCreditLimit(It.IsAny<User>(), It.IsAny<Client>()));
+            _creditLimitValidatorMock.Setup(x => x.Validate(It.IsAny<User>())).Returns(false);
+
+            // Act
+            var result = userService.AddUser(user.Firstname, user.Surname, user.EmailAddress, user.DateOfBirth, 1);
+
+            // Assert
+            Assert.False(result);
+            _clientRepositoryMock.Verify(x => x.GetById(It.IsAny<int>()), Times.Once);
+            _userValidatorMock.Verify(x => x.Validate(It.IsAny<User>()), Times.Once);
+            _creditLimitProviderMock.Verify(x => x.ApplyCreditLimit(It.IsAny<User>(), It.IsAny<Client>()), Times.Once);
+            _creditLimitValidatorMock.Verify(x => x.Validate(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.AddUser(It.IsAny<User>()), Times.Never);
         }
     }
 }
