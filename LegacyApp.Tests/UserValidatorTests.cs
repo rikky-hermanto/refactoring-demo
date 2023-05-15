@@ -124,7 +124,8 @@ namespace LegacyApp.Tests
         {
             // Arrange
             var currentDate = new DateTime(2023, 5, 15);
-            var validator = new UserValidator(currentDate);
+            var clock = new Clock(currentDate);
+            var validator = new UserValidator(clock);
             var dateOfBirth = new DateTime(1990, 1, 1);
             var expectedAge = 33;
 

@@ -2,14 +2,14 @@
 {
     public class UserValidator : IUserValidator
     {
-        private readonly DateTime _currentDate;
-        public UserValidator() : this(DateTime.Now)
+        private readonly IClock _clock;
+        public UserValidator() : this(new Clock(DateTime.Now))
         {
             
         }
-        public UserValidator(DateTime currentDate)
+        public UserValidator(IClock clock)
         {
-            _currentDate = currentDate;
+            _clock = clock;
         }
 
         public bool Validate(User user)
@@ -54,7 +54,7 @@
 
         public int CalculateAge(DateTime dateOfBirth)
         {
-            var now = _currentDate;
+            var now = _clock.Now;
             int age = now.Year - dateOfBirth.Year;
 
             if (now.Month < dateOfBirth.Month || now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
