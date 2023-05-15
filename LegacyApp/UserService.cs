@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LegacyApp
+﻿namespace LegacyApp
 {
     public class UserService : IUserService
     {
@@ -9,16 +7,17 @@ namespace LegacyApp
         private readonly IUserValidator _userValidator;
         private readonly ICreditLimitProvider _creditLimitProvider;
 
-        public UserService() : this(new ClientRepository(), new UserDataAccess(), new CreditLimitProvider())
+        public UserService() : this(new ClientRepository(), new UserDataAccess(), new CreditLimitProvider(), new UserValidator())
         {
             
         }
 
-        public UserService(IClientRepository clientRepository, IUserRepository userRepository, ICreditLimitProvider creditLimitProvider)
+        public UserService(IClientRepository clientRepository, IUserRepository userRepository, ICreditLimitProvider creditLimitProvider, IUserValidator userValidator)
         {
             _clientRepository = clientRepository;
             _userRepository = userRepository;
             _creditLimitProvider = creditLimitProvider;
+            _userValidator = userValidator;
         }
 
 
