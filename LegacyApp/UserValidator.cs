@@ -2,6 +2,16 @@
 {
     public class UserValidator : IUserValidator
     {
+        private readonly DateTime _currentDate;
+        public UserValidator() : this(DateTime.Now)
+        {
+            
+        }
+        public UserValidator(DateTime currentDate)
+        {
+            _currentDate = currentDate;
+        }
+
         public bool Validate(User user)
         {
             if (!ValidateName(user.Firstname) || !ValidateName(user.Surname))
@@ -32,16 +42,16 @@
             return email.Contains('@') && email.Contains('.');
         }
 
-        private static bool ValidateAge(DateTime dateOfBirth)
+        private bool ValidateAge(DateTime dateOfBirth)
         {
             int age = CalculateAge(dateOfBirth);
 
             return age >= 21;
         }
 
-        private static int CalculateAge(DateTime dateOfBirth)
+        private int CalculateAge(DateTime dateOfBirth)
         {
-            var now = DateTime.Now;
+            var now = _currentDate;
             int age = now.Year - dateOfBirth.Year;
 
             if (now.Month < dateOfBirth.Month || now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
