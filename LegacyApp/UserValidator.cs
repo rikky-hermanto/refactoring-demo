@@ -14,6 +14,9 @@
 
         public bool Validate(User user)
         {
+            if(user==null)
+                return false;
+
             if (!ValidateName(user.Firstname) || !ValidateName(user.Surname))
             {
                 return false;
@@ -49,7 +52,7 @@
             return age >= 21;
         }
 
-        private int CalculateAge(DateTime dateOfBirth)
+        public int CalculateAge(DateTime dateOfBirth)
         {
             var now = _currentDate;
             int age = now.Year - dateOfBirth.Year;
