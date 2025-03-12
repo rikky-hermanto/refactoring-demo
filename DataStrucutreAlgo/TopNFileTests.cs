@@ -158,7 +158,7 @@ namespace DataStrucutreAlgo
     {
         private readonly Dictionary<string, (List<File> files, int subTotalSize)> _collections = new Dictionary<string, (List<File> files, int subTotalSize)>();
         private int _totalSize = 0;
-        private PriorityQueue<string, int> _heap = new PriorityQueue<string, int>();
+        private PriorityQueue<string, int> _maxHeap = new PriorityQueue<string, int>();
 
         public void AddFile(string filename, int size, List<string>? tags = null) {
             if (size < 0)
@@ -189,11 +189,12 @@ namespace DataStrucutreAlgo
             }
 
             //Map to heap
-            var desc = new DescendingComparer();
-            _heap = new PriorityQueue<string, int>(comparer:desc);
+            //var desc = new DescendingComparer();
+            //_maxHeap = new PriorityQueue<string, int>(comparer: desc);
+            _maxHeap = new PriorityQueue<string, int>();
 
             foreach (var collection in _collections) {
-                _heap.Enqueue(collection.Key, collection.Value.subTotalSize );
+                _maxHeap.Enqueue(collection.Key, -1 * collection.Value.subTotalSize );
             }
         }
 
@@ -201,17 +202,17 @@ namespace DataStrucutreAlgo
             return _totalSize;
         }
 
-        private class DescendingComparer : IComparer<int>
-        {
-            public int Compare(int x, int y) => y.CompareTo(x); //descending
-        }
+        // private class DescendingComparer : IComparer<int>
+        // {
+        //     public int Compare(int x, int y) => y.CompareTo(x); //descending
+        // }
 
         public IEnumerable<string> GetTopNCollections(int n) {
             var topNCollections = new List<string>();
 
-            var heapCount = _heap.Count;
+            var heapCount = _maxHeap.Count;
             for (var i = 0; i < heapCount && i < n; i++) {
-                var tag =_heap.Dequeue();
+                var tag =_maxHeap.Dequeue();
 
                 if(_collections[tag].subTotalSize > 0)
                     topNCollections.Add(tag);
