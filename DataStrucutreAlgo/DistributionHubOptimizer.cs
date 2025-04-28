@@ -31,38 +31,40 @@ public class DistributionHubOptimizer
     //
     //     Therefore, the correct answer is 3.
 
-    public int getMinimumNumberOfUniqueDistributionCenters(int n, int[] dailyTrend)
-    {
-        if (n == 0 || dailyTrend.Length == 0)
-            return 0;
+    public int GetMinimumNumberOfUniqueDistributionCenters(int n, int[] dailyTrend) {
+        int curr = 0, currMin = 0, currMax = 0;
 
-        int count = 1; // Start with 1 unique hub
-        int prevDirection = 0; // 0 = start, 1 = up, -1 = down
 
-        for (int i = 1; i < dailyTrend.Length; i++)
-        {
-            int diff = dailyTrend[i] - dailyTrend[i - 1];
-            int currDirection = diff == 0 ? 0 : (diff > 0 ? 1 : -1);
+        for (int i = 1; i < dailyTrend.Length; i++) {
+            if (dailyTrend[i] > dailyTrend[i - 1])
+                curr++;
+            else if (dailyTrend[i] < dailyTrend[i - 1])
+                curr--;
 
-            if (currDirection != 0 && currDirection != prevDirection)
-            {
-                count++;
-                prevDirection = currDirection;
-            }
+            currMin = Math.Min(curr, currMin);
+            currMax = Math.Max(curr, currMax);
         }
 
-        return count;
+        return currMax - currMin + 1;
     }
 }
 
-public class DistributionHubTests
+public class GetMinimumNumberOfUniqueDistributionCentersTests
 {
     [Fact]
     public void Test_ExampleCase()
     {
         var sol = new DistributionHubOptimizer();
         int[] trend = { 10, 20, 30, 15, 10 };
-        Assert.Equal(3, sol.getMinimumNumberOfUniqueDistributionCenters(5, trend));
+        Assert.Equal(3, sol.GetMinimumNumberOfUniqueDistributionCenters(5, trend));
+    }
+
+    [Fact]
+    public void Test_ExampleCase2()
+    {
+        var sol = new DistributionHubOptimizer();
+        int[] trend = { 4, 5, 8, 5, 4 };
+        Assert.Equal(3, sol.GetMinimumNumberOfUniqueDistributionCenters(5, trend));
     }
 
     [Fact]
@@ -70,7 +72,7 @@ public class DistributionHubTests
     {
         var sol = new DistributionHubOptimizer();
         int[] trend = { 50, 50, 50, 50 };
-        Assert.Equal(1, sol.getMinimumNumberOfUniqueDistributionCenters(4, trend));
+        Assert.Equal(1, sol.GetMinimumNumberOfUniqueDistributionCenters(4, trend));
     }
 
     [Fact]
@@ -78,7 +80,7 @@ public class DistributionHubTests
     {
         var sol = new DistributionHubOptimizer();
         int[] trend = { 1, 2, 3, 4 };
-        Assert.Equal(2, sol.getMinimumNumberOfUniqueDistributionCenters(4, trend));
+        Assert.Equal(4, sol.GetMinimumNumberOfUniqueDistributionCenters(4, trend));
     }
 
     [Fact]
@@ -86,7 +88,7 @@ public class DistributionHubTests
     {
         var sol = new DistributionHubOptimizer();
         int[] trend = { 9, 8, 7, 6 };
-        Assert.Equal(2, sol.getMinimumNumberOfUniqueDistributionCenters(4, trend));
+        Assert.Equal(4, sol.GetMinimumNumberOfUniqueDistributionCenters(4, trend));
     }
 
     [Fact]
@@ -94,7 +96,7 @@ public class DistributionHubTests
     {
         var sol = new DistributionHubOptimizer();
         int[] trend = { 1, 3, 1, 3, 1 };
-        Assert.Equal(5, sol.getMinimumNumberOfUniqueDistributionCenters(5, trend));
+        Assert.Equal(2, sol.GetMinimumNumberOfUniqueDistributionCenters(5, trend));
     }
 
     [Fact]
@@ -102,6 +104,6 @@ public class DistributionHubTests
     {
         var sol = new DistributionHubOptimizer();
         int[] trend = { 10 };
-        Assert.Equal(1, sol.getMinimumNumberOfUniqueDistributionCenters(1, trend));
+        Assert.Equal(1, sol.GetMinimumNumberOfUniqueDistributionCenters(1, trend));
     }
 }
